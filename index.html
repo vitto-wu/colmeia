@@ -18,8 +18,11 @@ scripts: [/assets/js/mapa.js]
       <ul id="busca-resultados" class="busca-resultados" aria-live="polite"></ul>
     </div>
     <div id="legenda" class="legenda" aria-live="polite"></div>
-    <div class="compartilhar-vista"><button type="button" id="compartilhar-mapa" class="icone-botao" aria-label="Compartilhar esta vista" title="Compartilhar esta vista"></button><span id="compartilhar-status" role="status"></span></div>
     <p id="chamado" class="chamado-mapa" hidden></p>
+  </div>
+  <div id="controle-compartilhar" class="maplibregl-ctrl compartilhar-controle">
+    <button type="button" id="compartilhar-mapa" class="icone-botao" aria-label="Compartilhar esta vista" title="Compartilhar esta vista"></button>
+    <span id="compartilhar-status" role="status" aria-live="polite" aria-atomic="true"></span>
   </div>
   <aside id="painel" class="painel-setor vidro" aria-live="polite" hidden></aside>
   <div id="dica" class="dica" hidden></div>

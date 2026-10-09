@@ -45,6 +45,10 @@
     attributionControl: { compact: true }, dragRotate: false, pitchWithRotate: false,
   });
   mapa.touchZoomRotate.disableRotation();
+  mapa.addControl({
+    onAdd: function () { return $("controle-compartilhar"); },
+    onRemove: function () { $("controle-compartilhar").remove(); },
+  }, "top-right");
   mapa.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
   const geolocalizar = new maplibregl.GeolocateControl({ fitBoundsOptions: { maxZoom: 14 } });
   mapa.addControl(geolocalizar, "top-right");
@@ -193,9 +197,8 @@
   function htmlSetor(cd, p, d, m) {
     const uf = ufDe(cd);
     let h = '<header class="setor-cabecalho"><div><p class="sobretitulo">Setor censitário</p><h2>' + esc(d.b || "Setor " + cd.slice(-4)) +
-      '</h2></div><button type="button" id="compartilhar-setor" class="icone-botao" aria-label="Compartilhar este setor" title="Compartilhar este setor">' + iconeCompartilhar + '</button></header>';
+      '</h2></div></header>';
     h += '<p class="meta">' + esc(m.n) + " (" + uf + ") · estimativa pelos locais de votação próximos" + (p.q === 1 ? ' · <strong>estimativa fraca</strong> (local mais próximo a ' + fmt(d.dist / 1000) + " km)" : "") + "</p>";
-    h += '<p id="compartilhar-setor-status" class="compartilhar-feedback" role="status"></p>';
     if (p.q) {
       h += '<section class="resultado-setor" aria-label="Resultado estimado do primeiro turno de 2026"><h3>Resultado estimado <span>2026 · 1º turno</span></h3>';
       h += barra(p.l26 || 0, p.f26 || 0);
@@ -229,9 +232,6 @@
   function ligarPainel(cd) {
     const painel = $("painel");
     painel.querySelector(".fechar").addEventListener("click", fecharPainel);
-    $("compartilhar-setor").addEventListener("click", function () {
-      compartilhar($("compartilhar-setor"), $("compartilhar-setor-status"));
-    });
     $("enviar-grupo").addEventListener("submit", function (ev) {
       ev.preventDefault();
       const erro = $("grupo-erro");
@@ -256,6 +256,7 @@
   }
 
   function atualizarEndereco() {
+    atualizarCompartilhar();
     const q = new URLSearchParams();
     if (selecionado) q.set("setor", selecionado);
     else {
@@ -282,6 +283,7 @@
       return;
     }
     selecionado = null;
+    atualizarCompartilhar();
     foco = null;
     $("painel").hidden = true;
     $("chamado").hidden = true;
@@ -296,8 +298,17 @@
     if (/^\d{7}$/.test(q.get("cidade") || "")) focarMunicipio(q.get("cidade"), true).catch(function () {});
   }
 
+  let feedbackCompartilhar;
+  function atualizarCompartilhar() {
+    const rotulo = selecionado ? "Compartilhar este setor" : "Compartilhar esta vista";
+    $("compartilhar-mapa").setAttribute("aria-label", rotulo);
+    $("compartilhar-mapa").title = rotulo;
+    $("compartilhar-status").textContent = "";
+  }
+
   async function compartilhar(botao, status) {
     atualizarEndereco();
+    clearTimeout(feedbackCompartilhar);
     const url = location.href;
     status.textContent = "";
     botao.disabled = true;
@@ -312,6 +323,7 @@
       }
       await navigator.clipboard.writeText(url);
       status.textContent = "Link copiado";
+      feedbackCompartilhar = setTimeout(function () { status.textContent = ""; }, 4000);
     } catch (_) {
       status.textContent = "Copie o link na barra de endereço.";
     } finally {
