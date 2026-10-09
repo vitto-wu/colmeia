@@ -87,7 +87,7 @@ Reimplementação em Python do método da Folha (o repositório de referência n
 
 Como um local alimenta vários setores, somas de votos entre setores **não** são aditivas: o site mostra percentuais e nunca soma setores para chegar ao município (o total do município vem direto das seções).
 
-**Votos para Lula vencer** (`vm`, só no painel do setor): estimativa de eleitores que precisariam trocar Flávio por Lula para ele passar à frente nos locais ligados ao setor — metade da diferença, mais um (cada troca tira um de Flávio e soma um para Lula); zero quando Lula já lidera; `null` sem estimativa. A diferença percentual ponderada do setor é aplicada aos válidos, sem peso, dos locais ligados. Não se soma entre setores. O site não mostra totais de município nem nacional.
+**Votos para Lula vencer** (`vm`, só no painel do setor): estimativa de eleitores que precisariam trocar Flávio por Lula para ele passar à frente nos locais ligados ao setor — metade da diferença, mais um (cada troca tira um de Flávio e soma um para Lula); zero quando Lula já lidera; `null` sem estimativa. Onde Lula já lidera, o painel mostra no lugar o **potencial de votos** (`pot`): abstenções + brancos + nulos, com a fração ponderada do setor aplicada aos aptos, sem peso, dos mesmos locais. A diferença percentual ponderada do setor é aplicada aos válidos, sem peso, dos locais ligados. Não se soma entre setores. O site não mostra totais de município nem nacional.
 
 ### 3.5 Abas do site
 
@@ -143,7 +143,7 @@ Como visitante, encontro o diretório de ferramentas externas e sei como enviar 
 | Arquivo | Conteúdo | Carregado quando |
 |---|---|---|
 | `dados/setores.pmtiles` | PMTiles (um arquivo, lido por range requests) com duas camadas: `municipios` (z0–10) e `setores` (z10–12, overzoom até 16; tiles de no máximo 400 KB), com `CD_SETOR` e os valores das camadas de cor | Mapa |
-| `dados/setores/<UF>/<11 primeiros dígitos do CD_SETOR>.json` | Por setor (agrupado por subdistrito): bairro, município IBGE, ponto central, distância do local mais próximo, locais ligados, vizinhos, votos para Lula vencer (`vm`) | Ao abrir um setor |
+| `dados/setores/<UF>/<11 primeiros dígitos do CD_SETOR>.json` | Por setor (agrupado por subdistrito): bairro, município IBGE, ponto central, distância do local mais próximo, locais ligados, vizinhos, votos para Lula vencer (`vm`), potencial de votos (`pot`) | Ao abrir um setor |
 | `dados/municipios.json` | Índice nacional de municípios para a busca: código IBGE, nome, UF, caixa | Ao focar a busca |
 | `dados/setores_ids.txt.gz` | Lista dos `CD_SETOR` válidos, versionada para a checagem do CI | CI |
 | `dados/municipios/<UF>.json` | Municípios por código IBGE: caixa, códigos TSE, resultado oficial, contagens de setores | Busca e visão do município |

@@ -196,6 +196,10 @@
 
   function viradaSetor(d) {
     if (d.vm == null) return "";
+    if (d.vm === 0 && d.pot != null) {
+      return '<section class="virada-destaque" aria-label="Potencial de votos"><p class="rotulo">Potencial de votos aqui</p><p class="numero">' +
+        fmt(d.pot) + '</p><p class="nota">Abstenções, brancos e nulos nos locais de votação próximos (estimativa). Lula já lidera aqui: estes eleitores ampliam a vantagem.</p></section>';
+    }
     return '<section class="virada-destaque" aria-label="Votos para Lula vencer"><p class="rotulo">Votos para Lula vencer aqui</p><p class="numero">' +
       (d.vm ? fmt(d.vm) : "Lula já vence") + '</p><p class="nota">' +
       (d.vm ? "Eleitores que precisam trocar Flávio por Lula nos locais de votação próximos (estimativa)" : "Pela estimativa, Lula já lidera nos locais de votação próximos") + "</p></section>";
