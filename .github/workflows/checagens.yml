@@ -1,0 +1,73 @@
+name: Checagens
+
+# pull_request_target roda o código da branch base (confiável) e trata os arquivos do PR
+# apenas como dados: nada do PR é executado. Isso permite comentar e rotular PRs de forks.
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: checagens-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  checar:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PR: ${{ github.event.pull_request.number }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r pipeline/requirements.txt
+
+      - name: Baixar arquivos do PR (só como dados)
+        run: |
+          gh pr diff "$PR" --name-only > arquivos.txt
+          git fetch --no-tags origin "pull/$PR/head:pr-head"
+          mkdir -p pr
+          while IFS= read -r f; do
+            if git cat-file -e "pr-head:$f" 2>/dev/null; then
+              mkdir -p "pr/$(dirname "$f")"
+              git show "pr-head:$f" > "pr/$f"
+            fi
+          done < arquivos.txt
+
+      - name: Checar
+        id: checar
+        run: |
+          set +e
+          xargs -d '\n' -a arquivos.txt python pipeline/checar.py --raiz pr --relatorio relatorio.md > resultado.json
+          echo "codigo=$?" >> "$GITHUB_OUTPUT"
+          cat relatorio.md
+
+      - name: Comentar e rotular
+        run: |
+          gh pr comment "$PR" --body-file relatorio.md --edit-last --create-if-none
+          python - <<'PY' > rotulos.txt
+          import json
+          print("\n".join(json.load(open("resultado.json"))["rotulos"]))
+          PY
+          while IFS= read -r r; do
+            [ -n "$r" ] || continue
+            gh label create "$r" --force --color FBE0A0 >/dev/null
+            gh pr edit "$PR" --add-label "$r"
+          done < rotulos.txt
+
+      - name: Mescla automática (só texto de quadros)
+        if: steps.checar.outputs.codigo == '0' && vars.AUTO_MERGE_TEXTO == 'true'
+        run: |
+          if python -c "import json,sys; sys.exit(0 if json.load(open('resultado.json'))['somente_texto'] else 1)"; then
+            gh pr merge "$PR" --squash --auto || gh pr merge "$PR" --squash
+          fi
+
+      - name: Resultado
+        if: steps.checar.outputs.codigo != '0'
+        run: exit 1

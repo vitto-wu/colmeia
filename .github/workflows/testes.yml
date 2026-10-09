@@ -1,0 +1,22 @@
+name: Testes do pipeline
+
+on:
+  pull_request:
+    paths: ["pipeline/**"]
+  push:
+    branches: [main]
+    paths: ["pipeline/**"]
+
+permissions:
+  contents: read
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r pipeline/requirements.txt
+      - run: python -m pytest pipeline/testes -q

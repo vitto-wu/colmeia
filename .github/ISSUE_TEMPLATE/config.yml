@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Encontrar minha célula
+    url: https://colmeiabrasil.github.io/colmeia/celulas/
+    about: Busque sua zona eleitoral por cidade, bairro ou local de votação.

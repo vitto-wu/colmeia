@@ -1,0 +1,19 @@
+name: Denunciar conteúdo
+description: Conteúdo ilegal, desinformação, golpe, link de grupo adversário ou exposição de pessoas.
+title: "[denúncia] "
+labels: [denuncia]
+body:
+  - type: input
+    id: onde
+    attributes:
+      label: Onde está o problema
+      description: Link da página ou código da célula.
+    validations:
+      required: true
+  - type: textarea
+    id: descricao
+    attributes:
+      label: O que há de errado
+      description: Não repita aqui os dados pessoais expostos; só diga onde estão.
+    validations:
+      required: true

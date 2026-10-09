@@ -1,0 +1,64 @@
+# Pages CMS (https://pagescms.org): edição por formulário para admins convidados por e-mail.
+media: false
+content:
+  - name: quadros
+    label: Quadros
+    type: collection
+    path: celulas
+    subfolders: true
+    exclude: [index.html]
+    filename:
+      template: "{fields.id}.md"
+      field: create
+    view:
+      fields: [titulo, id, atualizado]
+      primary: titulo
+      sort: [titulo, atualizado]
+      search: [titulo, id]
+    fields:
+      - name: id
+        label: ID oficial (BR, SP, SP-71072, SP-001)
+        type: string
+        required: true
+      - name: nivel
+        label: Nível
+        type: select
+        required: true
+        options:
+          values: [brasil, uf, municipio, zona]
+      - name: titulo
+        label: Título
+        type: string
+        required: true
+      - name: atualizado
+        label: Atualizado em (marque a data de hoje ao publicar uma ação)
+        type: date
+        options:
+          format: yyyy-MM-dd
+      - name: body
+        label: "Quadro (mantenha os títulos: Próximas ações, Onde conversar, Materiais, Notas)"
+        type: text
+
+  - name: grupos
+    label: Grupos (só admins)
+    type: collection
+    path: _data/grupos
+    subfolders: true
+    format: yaml
+    fields:
+      - name: grupos
+        label: Grupos
+        type: object
+        list: true
+        fields:
+          - name: nome
+            label: Nome do grupo
+            type: string
+            required: true
+          - name: link
+            label: "Link (chat.whatsapp.com, whatsapp.com/channel ou t.me)"
+            type: string
+            required: true
+            pattern:
+              regex: "^https://(chat\\.whatsapp\\.com/|(www\\.)?whatsapp\\.com/channel/|t\\.me/)"
+              message: Só links de chat.whatsapp.com, whatsapp.com/channel ou t.me.

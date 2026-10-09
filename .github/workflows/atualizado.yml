@@ -1,0 +1,37 @@
+name: Carimbar data dos quadros
+
+# Depois que um PR entra na main, marca `atualizado` nos quadros alterados.
+# É essa data que acende a célula como "ação nos últimos 7 dias".
+on:
+  push:
+    branches: [main]
+    paths: ["celulas/**.md"]
+
+permissions:
+  contents: write
+
+jobs:
+  carimbar:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r pipeline/requirements.txt
+      - name: Carimbar
+        env:
+          ANTES: ${{ github.event.before }}
+          DEPOIS: ${{ github.sha }}
+        run: |
+          git diff --name-only --diff-filter=AM "$ANTES" "$DEPOIS" -- 'celulas/*.md' 'celulas/**/*.md' > alterados.txt || true
+          [ -s alterados.txt ] || exit 0
+          xargs -d '\n' -a alterados.txt python pipeline/carimbar.py
+          if git diff --quiet; then exit 0; fi
+          git config user.name "colmeia-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "chore: carimba data de atualização dos quadros"
+          git push

@@ -1,0 +1,28 @@
+title: Colmeia
+description: Cada setor censitário é uma célula. Cada célula precisa de gente se organizando.
+lang: pt-BR
+baseurl: /colmeia
+repositorio: colmeiabrasil/colmeia
+geocodificador: https://photon.komoot.io
+mapa_estilo: https://tiles.openfreemap.org/styles/positron
+markdown: kramdown
+
+exclude:
+  - pipeline
+  - README.md
+  - SPEC.md
+  - AGENTS.md
+  - CONTRIBUTING.md
+  - .specify
+  - .claude
+  - .pages.yml
+  - "*.py"
+  - .venv
+  - .cache
+  - dados/setores_ids.txt.gz
+
+defaults:
+  - scope:
+      path: celulas
+    values:
+      layout: quadro

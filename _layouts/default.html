@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% if page.title %}{{ page.title }} — {% endif %}{{ site.title }}</title>
+<meta name="description" content="{{ site.description }}">
+<meta property="og:title" content="{{ page.title | default: site.title }}">
+<meta property="og:description" content="{{ site.description }}">
+<meta property="og:image" content="{{ '/assets/colmeia-avatar.png' | absolute_url }}">
+<meta name="theme-color" content="#1B1410">
+<link rel="icon" href="{{ '/assets/colmeia-avatar.svg' | relative_url }}">
+{% if page.mapa %}<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css" integrity="sha384-uTttxo/aOKbdE5RlD/SPzSDoDmNvGlUYPjONi2MN/b7c9HPSvW07OIuyP7uL6jxK" crossorigin="anonymous">{% endif %}
+<link rel="stylesheet" href="{{ '/assets/css/colmeia.css' | relative_url }}">
+<script>window.COLMEIA = { base: {{ site.baseurl | jsonify }}, repo: {{ site.repositorio | jsonify }}, geocodificador: {{ site.geocodificador | jsonify }}, estilo: {{ site.mapa_estilo | jsonify }}, tiles: {{ site.mapa_tiles | jsonify }} };</script>
+</head>
+<body class="pagina-{{ page.aba }}{% if page.tela_cheia %} tela-cheia{% endif %}">
+<a class="pular" href="#principal">Pular para o conteúdo</a>
+<header class="topo">
+ <div class="topo-interno">
+  <a class="marca" href="{{ '/' | relative_url }}">
+    <img src="{{ '/assets/colmeia-avatar.svg' | relative_url }}" alt="" width="32" height="32">
+    <span>Colmeia</span>
+  </a>
+  <nav class="abas" aria-label="Navegação principal">
+    <a href="{{ '/' | relative_url }}"{% if page.aba == 'colmeia' %} aria-current="page"{% endif %}>Mapa</a>
+    <a href="{{ '/recursos/' | relative_url }}"{% if page.aba == 'recursos' %} aria-current="page"{% endif %}>Como participar</a>
+    {% if page.mapa %}<button type="button" id="abrir-metodologia">Metodologia</button>{% endif %}
+    <a href="https://github.com/colmeiabrasil/wiki" target="_blank" rel="noopener">Wiki ↗</a>
+  </nav>
+ </div>
+</header>
+<main id="principal" tabindex="-1">
+{{ content }}
+</main>
+{% unless page.tela_cheia %}<footer class="rodape">
+  <p><strong>Gente perto. Grupos conectados.</strong></p>
+  <p><a href="https://github.com/{{ site.repositorio }}">Código e histórico</a> ·
+  <a href="https://github.com/{{ site.repositorio }}/issues/new?template=denuncia.yml">Denunciar conteúdo</a></p>
+</footer>{% endunless %}
+<script src="{{ '/assets/js/comum.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/busca.js' | relative_url }}"></script>
+{% if page.mapa %}<script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js" integrity="sha384-5+cfbwT0iiub6VsQAdn6yz16nr6sDiQoHx6tm4O8OVYXHYOxcffFmCJBL0dgdvGp" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/pmtiles@4.5.0/dist/pmtiles.js" integrity="sha384-pbKNZbDshUsLnZMIVsn/t+j3xEY9PGfuX5Z22l5rcy/obXz3EwaMx1F5d9sRsJMn" crossorigin="anonymous"></script>{% endif %}
+{% for s in page.scripts %}<script src="{{ s | relative_url }}"></script>
+{% endfor %}
+</body>
+</html>

@@ -1,0 +1,10 @@
+---
+layout: null
+permalink: /dados/quadros.json
+---
+{%- assign quadros = site.pages | where_exp: "p", "p.nivel" -%}
+{"quadros":{
+{%- for p in quadros -%}
+{{ p.id | jsonify }}:{"titulo":{{ p.titulo | jsonify }},"atualizado":{{ p.atualizado | date: "%Y-%m-%d" | jsonify }},"html":{{ p.content | markdownify | jsonify }}}{% unless forloop.last %},{% endunless %}
+{%- endfor -%}
+},"grupos":{{ site.data.grupos | jsonify }}}

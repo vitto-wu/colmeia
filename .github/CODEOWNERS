@@ -1,0 +1,8 @@
+# Links de grupos: aprovação obrigatória de admin (com a regra de branch "Require review from Code Owners").
+# Troque @belisards pelo time de admins (ex.: @colmeiabrasil/admins) quando ele existir.
+/_data/grupos/   @belisards
+/.github/        @belisards
+/pipeline/       @belisards
+/.pages.yml      @belisards
+/AGENTS.md       @belisards
+/SPEC.md         @belisards
