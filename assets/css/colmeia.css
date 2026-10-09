@@ -531,7 +531,6 @@ input[type="search"]::placeholder { color: var(--suave); opacity: 1; }
 
 /* Controles de leitura: camada, busca e escala no mesmo cartão. */
 .cartao-mapa { width: min(410px, calc(100vw - 72px)); padding: 20px; border-radius: 20px; background: #fffdf8f5; box-shadow: 0 8px 32px #382a181c; max-height: calc(100% - 60px); overflow-y: auto; }
-.mapa-eyebrow { margin: 0 0 10px; color: #78654c; font-size: .65rem; font-weight: 750; letter-spacing: .15em; text-transform: uppercase; }
 .camadas { margin-bottom: 18px; border-radius: 12px; background: #eee9df; padding: 4px; }
 #camadas { display: flex; gap: 4px; }
 #camadas button { flex: 1; border: 0; border-radius: 9px; background: transparent; padding: 11px 6px; font: 650 .76rem/1.3 system-ui, sans-serif; color: #685b4c; cursor: pointer; }
@@ -560,8 +559,7 @@ input[type="search"]::placeholder { color: var(--suave); opacity: 1; }
 }
 @media (max-width: 640px) {
   .cartao-mapa { padding: 12px; border-radius: 16px; }
-  .mapa-eyebrow { display: none; }
-  .camadas { margin-bottom: 10px; }
+    .camadas { margin-bottom: 10px; }
   #camadas button { font-size: .68rem; padding: 9px 3px; min-height: 42px; }
   .cartao-mapa h1 { font-size: 1.15rem; margin-bottom: 10px; }
   .cartao-mapa .unidade { display: block; font-size: .7rem; margin-bottom: 10px; }
@@ -608,13 +606,13 @@ input[type="search"]::placeholder { color: var(--suave); opacity: 1; }
 .indicadores-setor div { background: #f2ede4; padding: 12px; border-radius: 12px; }
 .indicadores-setor dt { font-size: .72rem; color: #665a48; }
 .indicadores-setor dd { margin: 3px 0 0; font-size: 1.4rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.035em; }
-.indicadores-setor .virada { grid-column: 1 / -1; background: #f7ebe6; }
-.indicadores-setor .virada ul { list-style: none; margin: 6px 0 0; padding: 0; }
-.indicadores-setor .virada li { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 4px 0; border-top: 1px solid #ecd5cc; font-size: .78rem; letter-spacing: 0; font-weight: 500; }
-.indicadores-setor .virada li:first-child { border-top: 0; }
-.indicadores-setor .virada li small { color: #8a7a64; font-size: .65rem; }
-.indicadores-setor .virada li b { font-size: 1.15rem; color: #9e1f17; font-variant-numeric: tabular-nums; letter-spacing: -.03em; white-space: nowrap; }
-.comparacao-setor { font-size: .75rem; margin: 0 0 18px; color: #655945; }
+.virada-destaque { margin: 16px 0 0; padding: 14px 16px; border-radius: 14px; background: #f7ebe6; border: 1px solid #e6c9be; }
+.virada-destaque .rotulo { margin: 0; font-size: .78rem; font-weight: 600; color: #5c4f3d; }
+.virada-destaque .numero { margin: 2px 0 0; font-size: 2.4rem; line-height: 1.1; font-weight: 750; color: #9e1f17; font-variant-numeric: tabular-nums; letter-spacing: -.04em; }
+.virada-destaque .nota { margin: 4px 0 0; font-size: .68rem; color: #655945; }
+.resultado-setor h3 { font-size: .85rem; }
+.painel-setor .resultado-setor .numeros dd { font-size: 1rem; }
+.comparacao-setor { font-size: .75rem; margin: 12px 0 18px; color: #655945; }
 .comparacao-setor strong { color: #30281e; margin-left: 4px; }
 .comparacao-setor span { display: block; font-size: .68rem; margin-top: 2px; }
 .grupos-proprios { border-top: 1px solid #e8e0d2; padding-top: 4px; }

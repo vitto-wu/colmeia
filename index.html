@@ -8,7 +8,6 @@ scripts: [/assets/js/mapa.js]
 <section class="mapa-tela" aria-label="Mapa dos setores censitários">
   <div id="mapa" class="mapa-gl"></div>
   <div class="cartao-mapa vidro">
-    <p class="mapa-eyebrow">Explore o território</p>
     <nav class="camadas" aria-label="Camadas do mapa"><div id="camadas"></div></nav>
     <h1 id="mapa-titulo">Entenda sua vizinhança</h1>
     <p class="unidade" id="mapa-sub"></p>
@@ -31,8 +30,8 @@ scripts: [/assets/js/mapa.js]
     <h2>Como este mapa foi feito</h2>
     <p>As cores mostram uma <strong>estimativa</strong> por setor censitário do IBGE (Censo 2022), feita a partir das urnas dos locais de votação mais próximos. Não é o resultado dos moradores do setor: o voto é secreto e nenhum voto individual é identificável.</p>
     <p>Cada local de votação está no mapa pelas coordenadas publicadas pelo TSE. Locais sem coordenada ficam de fora. Para cada setor, buscamos os locais em faixas de 100 metros a partir da borda e usamos a faixa mais próxima. Os votos desses locais são somados com peso maior para os mais próximos do centro do setor.</p>
-    <p><strong>Espaço para conversar</strong> compara abstenções, brancos e nulos do 1º turno de 2026 com a diferença entre Lula e Flávio. Acima de 1×, esses votos sozinhos já seriam suficientes para virar.</p>
-    <p><strong>Votos para Lula vencer</strong> é o número de eleitores que precisariam trocar Flávio por Lula para ele passar à frente: metade da diferença de votos, mais um, porque cada troca tira um voto de Flávio e soma um para Lula. No Brasil e nos municípios, o número vem direto das seções do 1º turno de 2026 (o total nacional inclui o exterior). No setor, é uma estimativa: a diferença percentual do setor aplicada aos votos válidos dos locais de votação próximos. Como um local serve vários setores, os números dos setores não se somam.</p>
+    <p><strong>Potencial de votos</strong> compara abstenções, brancos e nulos do 1º turno de 2026 com a diferença entre Lula e Flávio. Acima de 1×, esses votos sozinhos já seriam suficientes para virar.</p>
+    <p><strong>Votos para Lula vencer</strong> estima quantos eleitores precisariam trocar Flávio por Lula para ele passar à frente nos locais de votação próximos ao setor: metade da diferença de votos, mais um, porque cada troca tira um voto de Flávio e soma um para Lula. A diferença percentual do setor é aplicada aos votos válidos desses locais. Como um local serve vários setores, os números dos setores não se somam.</p>
     <p>A variação desde 2022 só aparece quando os locais de votação da vizinhança são basicamente os mesmos nas duas eleições. Quando o local mais próximo fica a mais de 2 km, o setor é marcado como estimativa fraca.</p>
     <p>Método adaptado de <a href="https://github.com/deltafolha/eleicoes-por-setores-censitarios" target="_blank" rel="noopener">deltafolha/eleicoes-por-setores-censitarios</a>. Dados: TSE (votação e detalhe por seção, locais de votação) e IBGE (malha de setores do Censo 2022). Mapa de fundo © OpenStreetMap, OpenFreeMap.</p>
   </dialog>

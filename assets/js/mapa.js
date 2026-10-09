@@ -11,16 +11,15 @@
   const semDado = function (p, expr) { return ["case", ["==", valor(p), -999], COR.vazio, expr]; };
   const CAMADAS = {
     espaco: {
-      botao: "Espaço para conversar",
+      botao: "Potencial de votos",
       titulo: "Entenda sua vizinhança",
       sub: "Abstenção, brancos e nulos do 1º turno de 2026 comparados à diferença entre Lula e Flávio",
       cor: semDado("esp", ["interpolate", ["linear"], valor("esp"), 0.5, "#eee8de", 1, "#f8d98a", 2, "#f6b21a", 4, "#d7701a", 8, "#8f3510"]),
       escala: "linear-gradient(90deg,#eee8de 0%,#f8d98a 6.67%,#f6b21a 20%,#d7701a 46.67%,#8f3510 100%)",
       marcas: ["0,5× ou menos", "4×", "8× ou mais"],
       meio: "46.67%",
-      extremos: ["Menor proporção", "Maior proporção"],
+      extremos: ["Menor potencial", "Maior potencial"],
       leitura: "Quanto mais escuro, maior a soma de abstenções, brancos e nulos em relação à diferença de votos. 1× significa que as duas quantidades são iguais.",
-      ausente: "Sem estimativa",
     },
     d: {
       botao: "Variação 2022 → 2026",
@@ -95,7 +94,7 @@
     $("legenda").innerHTML = '<div class="legenda-extremos"><b>' + esc(c.extremos[0]) + '</b><b>' + esc(c.extremos[1]) +
       '</b></div><div class="legenda-escala" style="background:' + c.escala + '" aria-hidden="true"></div><div class="legenda-marcas" style="--meio:' + c.meio + '">' +
       c.marcas.map(function (m) { return '<span>' + esc(m) + '</span>'; }).join("") +
-      '</div><p class="legenda-leitura">' + esc(c.leitura) + '</p><div class="legenda-ausente"><i style="background:' + COR.vazio + '"></i>' + esc(c.ausente) + '</div>';
+      '</div><p class="legenda-leitura">' + esc(c.leitura) + '</p>' + (c.ausente ? '<div class="legenda-ausente"><i style="background:' + COR.vazio + '"></i>' + esc(c.ausente) + '</div>' : "");
     document.querySelectorAll("#camadas button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.camada === camada)); });
   }
 
@@ -111,8 +110,6 @@
   });
   pintar();
 
-  let brasil = null;
-  C.json("/dados/brasil.json").then(function (b) { brasil = b; }).catch(function () {});
 
   C.json("/dados/quadros.json").then(function (q) {
     grupos = q.grupos || {};
@@ -197,13 +194,11 @@
 
   const iconeCompartilhar = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V3m-4 4 4-4 4 4M5 13v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7"/></svg>';
 
-  function viradaSetor(d, m) {
-    const linhas = [["Perto deste setor", d.vm, "estimativa"], ["Em " + m.n, m.vm, "TSE"], ["No Brasil", brasil && brasil.vm, "TSE"]]
-      .filter(function (l) { return l[1] != null; });
-    if (!linhas.length) return "";
-    return '<div class="virada"><dt>Para Lula vencer, votos que precisam trocar Flávio por Lula</dt><dd><ul>' + linhas.map(function (l) {
-      return "<li><span>" + esc(l[0]) + " <small>" + l[2] + "</small></span><b>" + (l[1] ? fmt(l[1]) : "Lula já vence") + "</b></li>";
-    }).join("") + "</ul></dd></div>";
+  function viradaSetor(d) {
+    if (d.vm == null) return "";
+    return '<section class="virada-destaque" aria-label="Votos para Lula vencer"><p class="rotulo">Votos para Lula vencer aqui</p><p class="numero">' +
+      (d.vm ? fmt(d.vm) : "Lula já vence") + '</p><p class="nota">' +
+      (d.vm ? "Eleitores que precisam trocar Flávio por Lula nos locais de votação próximos (estimativa)" : "Pela estimativa, Lula já lidera nos locais de votação próximos") + "</p></section>";
   }
 
   function htmlSetor(cd, p, d, m) {
@@ -212,10 +207,11 @@
       '</h2></div></header>';
     h += '<p class="meta">' + esc(m.n) + " (" + uf + ") · estimativa pelos locais de votação próximos" + (p.q === 1 ? ' · <strong>estimativa fraca</strong> (local mais próximo a ' + fmt(d.dist / 1000) + " km)" : "") + "</p>";
     if (p.q) {
+      h += viradaSetor(d);
+      h += '<dl class="indicadores-setor"><div><dt>Abstenção</dt><dd>' + fmt(p.ab) + '%</dd></div><div><dt>Brancos e nulos</dt><dd>' + fmt(p.bn) + '%</dd></div></dl>';
       h += '<section class="resultado-setor" aria-label="Resultado estimado do primeiro turno de 2026"><h3>Resultado estimado <span>2026 · 1º turno</span></h3>';
       h += barra(p.l26 || 0, p.f26 || 0);
       h += '<dl class="numeros"><div><dt>Lula</dt><dd>' + fmt(p.l26) + '%</dd></div><div><dt>Flávio</dt><dd>' + fmt(p.f26) + '%</dd></div><div><dt>Outros</dt><dd>' + fmt(Math.max(0, 100 - Math.round(p.l26) - Math.round(p.f26))) + "%</dd></div></dl></section>";
-      h += '<dl class="indicadores-setor"><div><dt>Abstenção</dt><dd>' + fmt(p.ab) + '%</dd></div><div><dt>Brancos e nulos</dt><dd>' + fmt(p.bn) + '%</dd></div>' + viradaSetor(d, m) + '</dl>';
       if (p.l22 != null) h += '<p class="comparacao-setor">Lula em 2022 <strong>' + fmt(p.l22) + '%</strong> <span>2º turno' +
         (p.d != null ? ' · variação ' + (p.d > 0 ? '+' : '') + fmt(p.d) + ' p.p.' : ' · sem comparação confiável') + '</span></p>';
     } else {
@@ -418,7 +414,7 @@
     const comGrupo = setoresComGrupo().filter(function (s) { return s.slice(0, 7) === cd; }).length;
     $("chamado").hidden = false;
     $("chamado").textContent = "Em " + c.nome + ", " + m.com_espaco.toLocaleString("pt-BR") + " de " + m.setores.toLocaleString("pt-BR") +
-      " setores têm espaço para virar e " + (comGrupo ? "só " + comGrupo + (comGrupo === 1 ? " tem" : " têm") : "nenhum tem") + " grupo. Comece o seu.";
+      " setores têm potencial de votos para virar e " + (comGrupo ? "só " + comGrupo + (comGrupo === 1 ? " tem" : " têm") : "nenhum tem") + " grupo. Comece o seu.";
   }
 
   const modal = $("metodologia");
