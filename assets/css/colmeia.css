@@ -487,10 +487,6 @@ input[type="search"]::placeholder { color: var(--suave); opacity: 1; }
 .legenda .rampa { display: inline-flex; align-items: center; gap: 5px; }
 .legenda i { display: inline-block; width: 56px; height: 8px; border-radius: 2px; }
 .chamado-mapa { margin: 9px 0 0; padding-top: 8px; border-top: 1px solid #ece4d8; font-size: .8rem; font-weight: 600; }
-.virada-mapa { margin: 10px 0 0; padding: 10px 12px; border-radius: 12px; background: #f7ebe6; border: 1px solid #e6c9be; display: flex; flex-direction: column; gap: 1px; }
-.virada-mapa span { font-size: .72rem; color: #665a48; }
-.virada-mapa strong { font-size: 1.35rem; color: #9e1f17; font-variant-numeric: tabular-nums; letter-spacing: -.03em; }
-.virada-mapa small { font-size: .66rem; color: #655945; }
 .visualmente-oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 
 .painel-setor { position: absolute; z-index: 3; left: 12px; bottom: 76px; width: min(360px, calc(100vw - 24px)); max-height: calc(100% - 280px); min-height: 160px; overflow-y: auto; padding: 12px 14px; font-size: .85rem; line-height: 1.45; }
@@ -612,11 +608,12 @@ input[type="search"]::placeholder { color: var(--suave); opacity: 1; }
 .indicadores-setor div { background: #f2ede4; padding: 12px; border-radius: 12px; }
 .indicadores-setor dt { font-size: .72rem; color: #665a48; }
 .indicadores-setor dd { margin: 3px 0 0; font-size: 1.4rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.035em; }
-.virada-setor { background: #f7ebe6; border: 1px solid #e6c9be; padding: 12px; border-radius: 12px; margin: 0 0 12px; }
-.virada-setor .rotulo { font-size: .72rem; color: #665a48; margin: 0; }
-.virada-setor .numero { margin: 3px 0 0; font-size: 1.5rem; font-weight: 700; color: #9e1f17; font-variant-numeric: tabular-nums; letter-spacing: -.035em; }
-.virada-setor .nota { font-size: .68rem; margin: 4px 0 0; color: #655945; }
-.virada-setor[data-venceu] .numero { font-size: 1.05rem; }
+.indicadores-setor .virada { grid-column: 1 / -1; background: #f7ebe6; }
+.indicadores-setor .virada ul { list-style: none; margin: 6px 0 0; padding: 0; }
+.indicadores-setor .virada li { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 4px 0; border-top: 1px solid #ecd5cc; font-size: .78rem; letter-spacing: 0; font-weight: 500; }
+.indicadores-setor .virada li:first-child { border-top: 0; }
+.indicadores-setor .virada li small { color: #8a7a64; font-size: .65rem; }
+.indicadores-setor .virada li b { font-size: 1.15rem; color: #9e1f17; font-variant-numeric: tabular-nums; letter-spacing: -.03em; white-space: nowrap; }
 .comparacao-setor { font-size: .75rem; margin: 0 0 18px; color: #655945; }
 .comparacao-setor strong { color: #30281e; margin-left: 4px; }
 .comparacao-setor span { display: block; font-size: .68rem; margin-top: 2px; }
