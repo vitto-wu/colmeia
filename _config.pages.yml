@@ -1,1 +1,17 @@
+# Cloudflare Pages publica na raiz. O PMTiles excede o limite de arquivo do Pages.
 baseurl: ""
+mapa_tiles: https://colmeiabrasil.github.io/colmeia/dados/setores.pmtiles
+exclude:
+  - pipeline
+  - README.md
+  - SPEC.md
+  - AGENTS.md
+  - CONTRIBUTING.md
+  - .specify
+  - .claude
+  - .pages.yml
+  - "*.py"
+  - .venv
+  - .cache
+  - dados/setores_ids.txt.gz
+  - dados/setores.pmtiles

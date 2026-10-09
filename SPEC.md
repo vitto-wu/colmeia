@@ -63,10 +63,10 @@ A home é o mapa, em tela cheia, adaptando a linguagem visual do [mapa de result
 
 - **Fundo claro e discreto** (estilo vetorial tipo Positron), sem POIs nem transporte. Água e vias desenhadas **acima** das manchas: as vias brancas finas dividem os setores; rótulos de lugar e rua escurecidos, com halo branco.
 - **Setores contínuos**, preenchimento ~90% de opacidade, contorno na mesma cor do preenchimento (sem frestas brancas). Municípios como forro na visão nacional e sempre por baixo, para nunca ficar vazio se um tile de setores falhar.
-- **Cartão principal** (canto superior esquerdo): seletor de camadas no topo, título, busca (cidade, bairro, rua, escola), legenda ampla com escala numérica e explicação das cores, e botão para copiar o link da vista.
+- **Cartão principal** (canto superior esquerdo): seletor de camadas no topo, título, busca (cidade, bairro, rua, escola), legenda ampla com escala numérica e explicação das cores, e ícone para compartilhar a vista (menu nativo do aparelho ou cópia do link).
 - **Duas camadas:** Espaço para conversar (padrão) e Variação 2022 → 2026. A variação usa azul para queda, vermelho para aumento e tom claro para estabilidade; cinza indica ausência de comparação confiável. As abas Quem venceu, Lula 2026, Lula 2022 e Organização foram retiradas na revisão de 2026-10-09.
 - **Hover** (desktop): tooltip com o resumo do setor. **Toque/clique**: painel do setor.
-- **Painel do setor**, "resposta primeiro, prova sob demanda": bairro e município, barra de resultado, abstenção/brancos/nulos, variação, **grupos do setor** e botão "Enviar link do meu grupo"; sem a seção de urnas ou marcadores numerados. No celular vira folha inferior.
+- **Painel do setor**, "resposta primeiro, prova sob demanda": bairro e município, barra de resultado, abstenção/brancos/nulos, variação, **grupos do setor**, com o formulário "Enviar link do meu grupo" dentro desse bloco, antes dos grupos vizinhos; ícone único de compartilhamento. Abstenção e brancos/nulos aparecem em cartões separados de consulta, sem metas de campanha. Sem a seção de urnas ou marcadores numerados. No celular vira folha inferior.
 - **Menu principal**: Mapa, Como participar, Metodologia (modal) e Wiki (link direto ao GitHub). Sem caixa de créditos sobre o mapa; fontes TSE e IBGE descritas no modal, atribuição cartográfica preservada no mapa. Células continua acessível por URL, mas sai do menu.
 - Abertura: visão nacional; "usar minha localização" só com permissão explícita (sem geolocalização por IP).
 - Zoom e localização no canto superior direito.
@@ -88,7 +88,7 @@ Como um local alimenta vários setores, somas de votos entre setores **não** s�
 
 ### 3.5 Abas do site
 
-1. **Mapa** (home) — seção 3.3. O painel do setor tem link próprio (`/#setor=<CD_SETOR>`) para compartilhar no WhatsApp. A busca por cidade, escola ou rua gera um link com posição, zoom e camada; o botão “Copiar link desta vista” compartilha a vista atual. O texto do endereço não entra no link.
+1. **Mapa** (home) — seção 3.3. O painel do setor tem link próprio (`/#setor=<CD_SETOR>`) para compartilhar no WhatsApp. A busca por cidade, escola ou rua gera um link com posição, zoom e camada; o ícone de compartilhamento compartilha a vista atual. O texto do endereço não entra no link.
 2. **Células** (fora do menu principal) — busca textual e lista de setores, municípios e UFs, para quem não quer usar o mapa.
 3. **Como participar** — orientação e diretório de ferramentas, mantido em [diretório da wiki](https://github.com/colmeiabrasil/wiki/tree/main/diretorio) e publicado por uma cópia versionada em `diretorio.md` neste repositório.
 
@@ -106,7 +106,7 @@ Como pessoa que quer ajudar, digito minha cidade, bairro, rua ou o nome da escol
 Como pessoa no meu setor, vejo bairro, município, resultado estimado de 2026 T1 e 2022 T2, abstenção, brancos e nulos, e se há espaço para virar.
 - Indica que é estimativa, quantos locais de votação foram usados e a distância.
 - Lista os grupos do setor, dos vizinhos, do município e do estado.
-- Link direto `/#setor=<CD_SETOR>` para compartilhar no WhatsApp. A busca por cidade, escola ou rua gera um link com posição, zoom e camada; o botão “Copiar link desta vista” compartilha a vista atual. O texto do endereço não entra no link.
+- Link direto `/#setor=<CD_SETOR>` para compartilhar no WhatsApp. A busca por cidade, escola ou rua gera um link com posição, zoom e camada; o ícone de compartilhamento compartilha a vista atual. O texto do endereço não entra no link.
 
 **US3 — Ver onde conversar (P1)**
 Como pessoa organizando, vejo no mapa os setores com espaço para virar perto de mim e quais já têm grupo.
@@ -254,3 +254,9 @@ recursos.md                 # aba Como participar
 - Zonas do exterior (`ZZ`) ficam só na busca?
 - O tempo e o disco do runner gratuito do GitHub bastam para o pipeline nacional? Se não, gerar por UF em matriz de jobs.
 - Limite de 2 km para "estimativa fraca" está bom em áreas rurais?
+
+### Publicação alternativa no Cloudflare Pages
+
+O workflow `site.yml` publica apenas no GitHub Pages. O endereço `colmeiabrasil.pages.dev` depende de um deploy separado no projeto Cloudflare correspondente, com autenticação própria.
+
+Para Cloudflare, combinar `_config.yml` e `_config.pages.yml`: base URL vazia, JSONs locais e PMTiles servido pelo endereço público do GitHub Pages, que suporta CORS e Range. O PMTiles de aproximadamente 225 MB fica fora do pacote Cloudflare, cujo limite por arquivo é 25 MiB. Não restaurar a URL pessoal de infraestrutura da configuração antiga.
