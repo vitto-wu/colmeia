@@ -111,6 +111,17 @@
   });
   pintar();
 
+  let brasil = null;
+  function placar(m, nome) {
+    const alvo = m || brasil;
+    if (!alvo || alvo.vm == null) { $("virada").hidden = true; return; }
+    $("virada").hidden = false;
+    $("virada").innerHTML = '<span>' + esc(m ? "Em " + nome : "No Brasil") + ', para Lula vencer</span><strong>' +
+      (alvo.vm ? fmt(alvo.vm, 0) + " votos" : "Lula já vence") + "</strong><small>" +
+      (alvo.vm ? "precisam trocar Flávio por Lula · 1º turno de 2026, TSE" : "no 1º turno de 2026, TSE") + "</small>";
+  }
+  C.json("/dados/brasil.json").then(function (b) { brasil = b; if (!foco) placar(); }).catch(function () {});
+
   C.json("/dados/quadros.json").then(function (q) {
     grupos = q.grupos || {};
   }).catch(function () {});
@@ -204,6 +215,9 @@
       h += barra(p.l26 || 0, p.f26 || 0);
       h += '<dl class="numeros"><div><dt>Lula</dt><dd>' + fmt(p.l26) + '%</dd></div><div><dt>Flávio</dt><dd>' + fmt(p.f26) + '%</dd></div><div><dt>Outros</dt><dd>' + fmt(Math.max(0, 100 - p.l26 - p.f26)) + "%</dd></div></dl></section>";
       h += '<dl class="indicadores-setor"><div><dt>Abstenção</dt><dd>' + fmt(p.ab) + '%</dd></div><div><dt>Brancos e nulos</dt><dd>' + fmt(p.bn) + '%</dd></div></dl>';
+      if (d.vm != null) h += '<section class="virada-setor" aria-label="Votos para Lula vencer"' + (d.vm ? "" : " data-venceu") + '><p class="rotulo">Votos para Lula vencer aqui</p><p class="numero">' +
+        (d.vm ? fmt(d.vm, 0) : "Lula já vence") + '</p><p class="nota">' +
+        (d.vm ? "Eleitores que precisam trocar Flávio por Lula nos locais de votação próximos ao setor (estimativa, 1º turno de 2026)." : "Pela estimativa do 1º turno de 2026, Lula já lidera nos locais de votação próximos.") + "</p></section>";
       if (p.l22 != null) h += '<p class="comparacao-setor">Lula em 2022 <strong>' + fmt(p.l22) + '%</strong> <span>2º turno' +
         (p.d != null ? ' · variação ' + (p.d > 0 ? '+' : '') + fmt(p.d) + ' p.p.' : ' · sem comparação confiável') + '</span></p>';
     } else {
@@ -287,6 +301,7 @@
     foco = null;
     $("painel").hidden = true;
     $("chamado").hidden = true;
+    placar();
     $("busca").value = "";
     mapa.setFilter("set-sel", ["==", ["get", "id"], ""]);
     const vista = (q.get("mapa") || "").split(",");
@@ -385,6 +400,7 @@
       if (f) {
         foco = null;
         $("chamado").hidden = true;
+        placar();
         mapa.once("moveend", atualizarEndereco);
         mapa.flyTo({ center: f.geometry.coordinates, zoom: 15 });
       }
@@ -404,6 +420,7 @@
     }
     entrada.value = c.nome + " (" + c.uf + ")";
     const comGrupo = setoresComGrupo().filter(function (s) { return s.slice(0, 7) === cd; }).length;
+    placar(m, c.nome);
     $("chamado").hidden = false;
     $("chamado").textContent = "Em " + c.nome + ", " + m.com_espaco.toLocaleString("pt-BR") + " de " + m.setores.toLocaleString("pt-BR") +
       " setores têm espaço para virar e " + (comGrupo ? "só " + comGrupo + (comGrupo === 1 ? " tem" : " têm") : "nenhum tem") + " grupo. Comece o seu.";

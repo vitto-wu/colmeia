@@ -63,11 +63,11 @@ A home é o mapa, em tela cheia, adaptando a linguagem visual do [mapa de result
 
 - **Fundo claro e discreto** (estilo vetorial tipo Positron), sem POIs nem transporte. Água e vias desenhadas **acima** das manchas: as vias brancas finas dividem os setores; rótulos de lugar e rua escurecidos, com halo branco.
 - **Setores contínuos**, preenchimento ~90% de opacidade, contorno na mesma cor do preenchimento (sem frestas brancas). Municípios como forro na visão nacional e sempre por baixo, para nunca ficar vazio se um tile de setores falhar.
-- **Cartão principal** (canto superior esquerdo): seletor de camadas no topo, título, busca (cidade, bairro, rua, escola), legenda ampla com escala numérica e explicação das cores.
+- **Cartão principal** (canto superior esquerdo): seletor de camadas no topo, título, busca (cidade, bairro, rua, escola), legenda ampla com escala numérica e explicação das cores e placar "votos para Lula vencer" (Brasil, ou o município em foco).
 - **Compartilhamento:** um único botão de 44 × 44 px nos controles do mapa, sempre visível, inclusive com o painel aberto no celular. Compartilha o setor selecionado ou a vista atual pelo menu nativo do aparelho, com cópia do link como alternativa.
 - **Duas camadas:** Espaço para conversar (padrão) e Variação 2022 → 2026. A variação usa azul para queda, vermelho para aumento e tom claro para estabilidade; cinza indica ausência de comparação confiável. As abas Quem venceu, Lula 2026, Lula 2022 e Organização foram retiradas na revisão de 2026-10-09.
 - **Hover** (desktop): tooltip com o resumo do setor. **Toque/clique**: painel do setor.
-- **Painel do setor**, "resposta primeiro, prova sob demanda": bairro e município, barra de resultado, abstenção/brancos/nulos, variação, **grupos do setor**, com o formulário "Enviar link do meu grupo" dentro desse bloco, antes dos grupos vizinhos. Abstenção e brancos/nulos aparecem em cartões separados de consulta, sem metas de campanha. Sem a seção de urnas ou marcadores numerados. No celular vira folha inferior.
+- **Painel do setor**, "resposta primeiro, prova sob demanda": bairro e município, barra de resultado, abstenção/brancos/nulos, **votos para Lula vencer** (quantos eleitores precisam mudar de lado no setor, ver 3.4), variação, **grupos do setor**, com o formulário "Enviar link do meu grupo" dentro desse bloco, antes dos grupos vizinhos. Abstenção e brancos/nulos aparecem em cartões separados de consulta, sem metas de campanha. Sem a seção de urnas ou marcadores numerados. No celular vira folha inferior.
 - **Menu principal**: Mapa, Como participar, Metodologia (modal) e Wiki (link direto ao GitHub). Sem caixa de créditos sobre o mapa; fontes TSE e IBGE descritas no modal, atribuição cartográfica preservada no mapa. Células continua acessível por URL, mas sai do menu.
 - Abertura: visão nacional; "usar minha localização" só com permissão explícita (sem geolocalização por IP).
 - Zoom e localização no canto superior direito.
@@ -87,6 +87,8 @@ Reimplementação em Python do método da Folha (o repositório de referência n
 
 Como um local alimenta vários setores, somas de votos entre setores **não** são aditivas: o site mostra percentuais e nunca soma setores para chegar ao município (o total do município vem direto das seções).
 
+**Votos para Lula vencer** (`vm`): eleitores que precisariam trocar Flávio por Lula para ele passar à frente — metade da diferença de votos, mais um (cada troca tira um de Flávio e soma um para Lula); zero quando Lula já lidera. No Brasil (`dados/brasil.json`, com o exterior) e nos municípios (`dados/municipios/<UF>.json`) vem direto das seções do 1º turno de 2026. No setor (`dados/setores/`, `null` sem estimativa) é estimativa: a diferença percentual ponderada do setor aplicada aos votos válidos, sem peso, dos locais ligados. Como um local serve vários setores, os valores de setor não se somam.
+
 ### 3.5 Abas do site
 
 1. **Mapa** (home) — seção 3.3. O painel do setor tem link próprio (`/#setor=<CD_SETOR>`) para compartilhar no WhatsApp. A busca por cidade, escola ou rua gera um link com posição, zoom e camada; o ícone de compartilhamento compartilha a vista atual. O texto do endereço não entra no link.
@@ -104,7 +106,7 @@ Como pessoa que quer ajudar, digito minha cidade, bairro, rua ou o nome da escol
 - Funciona sem login.
 
 **US2 — Ver o setor (P1)**
-Como pessoa no meu setor, vejo bairro, município, resultado estimado de 2026 T1 e 2022 T2, abstenção, brancos e nulos, e se há espaço para virar.
+Como pessoa no meu setor, vejo bairro, município, resultado estimado de 2026 T1 e 2022 T2, abstenção, brancos e nulos, quantos votos precisam mudar de lado para Lula vencer, e se há espaço para virar.
 - Indica que é estimativa, quantos locais de votação foram usados e a distância.
 - Lista os grupos do setor, dos vizinhos, do município e do estado.
 - Link direto `/#setor=<CD_SETOR>` para compartilhar no WhatsApp. A busca por cidade, escola ou rua gera um link com posição, zoom e camada; o ícone de compartilhamento compartilha a vista atual. O texto do endereço não entra no link.
@@ -141,10 +143,11 @@ Como visitante, encontro o diretório de ferramentas externas e sei como enviar 
 | Arquivo | Conteúdo | Carregado quando |
 |---|---|---|
 | `dados/setores.pmtiles` | PMTiles (um arquivo, lido por range requests) com duas camadas: `municipios` (z0–10) e `setores` (z10–12, overzoom até 16; tiles de no máximo 400 KB), com `CD_SETOR` e os valores das camadas de cor | Mapa |
-| `dados/setores/<UF>/<11 primeiros dígitos do CD_SETOR>.json` | Por setor (agrupado por subdistrito): bairro, município IBGE, ponto central, distância do local mais próximo, locais ligados, vizinhos | Ao abrir um setor |
+| `dados/setores/<UF>/<11 primeiros dígitos do CD_SETOR>.json` | Por setor (agrupado por subdistrito): bairro, município IBGE, ponto central, distância do local mais próximo, locais ligados, vizinhos, votos para Lula vencer (`vm`) | Ao abrir um setor |
+| `dados/brasil.json` | Total nacional do 1º turno de 2026 (com o exterior): votos de Lula e Flávio e votos para Lula vencer | Mapa |
 | `dados/municipios.json` | Índice nacional de municípios para a busca: código IBGE, nome, UF, caixa | Ao focar a busca |
 | `dados/setores_ids.txt.gz` | Lista dos `CD_SETOR` válidos, versionada para a checagem do CI | CI |
-| `dados/municipios/<UF>.json` | Municípios por código IBGE: caixa, códigos TSE, resultado oficial, contagens de setores | Busca e visão do município |
+| `dados/municipios/<UF>.json` | Municípios por código IBGE: caixa, códigos TSE, resultado oficial, votos para Lula vencer, contagens de setores | Busca e visão do município |
 | `dados/locais/<UF>.json` | Locais de votação 2026 com coordenadas e setores ligados | Busca por escola |
 | `dados/quadros.json` | Grupos aprovados, por nível (gerado pelo Jekyll a partir de `_data/grupos/`) | Painel do setor e contagem municipal |
 
