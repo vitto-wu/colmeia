@@ -39,6 +39,11 @@ python -m pytest pipeline/testes -q
 python pipeline/checar.py celulas/BR.md     # mesma checagem do CI
 ```
 
+Conector de LLM (`pipeline/llm.py`, Kimi via OpenRouter por padrão; outros modelos do OpenRouter
+em `LLM_MODELO`, ou direto em Kimi, DeepSeek, GLM e Qwen com `LLM_PROVEDOR`):
+copie `.env.example` para `.env`, preencha `LLM_API_KEY` e rode `python pipeline/llm.py --modelos`
+para conferir o acesso. Só envie dados agregados.
+
 Os dados em `dados/` são gerados pelos scripts da [wiki](https://github.com/colmeiabrasil/wiki).
 
 Site local: rode `bundle exec jekyll serve` (gem `github-pages`) ou qualquer Jekyll 3.10+. O catálogo em `diretorio.md` é uma cópia publicada de `diretorio/README.md` da wiki; ao editar a fonte, copie o arquivo para este checkout e envie a atualização por PR. A wiki é privada, por isso o build usa a cópia versionada e não exige acesso entre repositórios.
