@@ -228,7 +228,7 @@ _data/grupos/               # protegido
   SP/index.yml              # UF
   SP/municipios/71072.yml   # município
   SP/setores/355030805000001.yml
-dados/                      # gerado pelo pipeline; setores.pmtiles e setores/ em Git LFS
+dados/                      # gerado pelo pipeline; só setores.pmtiles em Git LFS
 pipeline/                   # checagens dos PRs (gerador dos dados fica na wiki)
   checar.py
 diretorio.md                # cópia publicada de diretorio/README.md da wiki (atualizada por PR)

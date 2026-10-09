@@ -21,7 +21,7 @@ Já tem um grupo? Envie o link de convite; os admins revisam antes de publicar.
 |---|---|
 | Quadros (Markdown, um por nível) | `celulas/BR.md`, `celulas/SP/index.md`, `celulas/SP/municipios/71072.md`, `celulas/SP/zonas/001.md` |
 | Links de grupos (protegidos) | `_data/grupos/SP/setores/<CD_SETOR>.yml`, `_data/grupos/SP/index.yml` etc. |
-| Estimativas por setor (Git LFS: `git lfs pull`) | `dados/setores.pmtiles`, `dados/setores/`, `dados/municipios/`, `dados/locais/` |
+| Estimativas por setor (só o PMTiles usa Git LFS: `git lfs pull`) | `dados/setores.pmtiles`, `dados/setores/`, `dados/municipios/`, `dados/locais/` |
 | IDs válidos de setor | `dados/setores_ids.txt.gz` |
 | Dados gerados do TSE | `dados/celulas.json`, `dados/busca/<UF>.json` |
 | Checagens dos PRs | `pipeline/` |
