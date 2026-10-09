@@ -162,7 +162,9 @@
       d = (await C.json(arquivoSetor(cd)))[cd];
       m = (await C.json("/dados/municipios/" + uf + ".json"))[d.m];
     } catch (e) {
+      if (selecionado !== cd) return;
       painel.innerHTML = fechar() + "<p>Não encontramos este setor. Verifique sua conexão.</p>";
+      painel.querySelector(".fechar").addEventListener("click", fecharPainel);
       return;
     }
     if (selecionado !== cd) return;
@@ -186,27 +188,33 @@
     return '<div class="barra" aria-hidden="true"><span style="width:' + l + '%;background:' + COR.lula[1] + '"></span><span style="width:' + o + '%;background:#c9b48c"></span><span style="width:' + f + '%;background:' + COR.flavio[1] + '"></span></div>';
   }
 
+  const iconeCompartilhar = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V3m-4 4 4-4 4 4M5 13v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7"/></svg>';
+
   function htmlSetor(cd, p, d, m) {
     const uf = ufDe(cd);
-    let h = '<p class="sobretitulo">Setor censitário</p><h2>' + esc(d.b || "Setor " + cd.slice(-4)) + "</h2>";
+    let h = '<header class="setor-cabecalho"><div><p class="sobretitulo">Setor censitário</p><h2>' + esc(d.b || "Setor " + cd.slice(-4)) +
+      '</h2></div><button type="button" id="compartilhar-setor" class="icone-botao" aria-label="Compartilhar este setor" title="Compartilhar este setor">' + iconeCompartilhar + '</button></header>';
     h += '<p class="meta">' + esc(m.n) + " (" + uf + ") · estimativa pelos locais de votação próximos" + (p.q === 1 ? ' · <strong>estimativa fraca</strong> (local mais próximo a ' + fmt(d.dist / 1000) + " km)" : "") + "</p>";
+    h += '<p id="compartilhar-setor-status" class="compartilhar-feedback" role="status"></p>';
     if (p.q) {
+      h += '<section class="resultado-setor" aria-label="Resultado estimado do primeiro turno de 2026"><h3>Resultado estimado <span>2026 · 1º turno</span></h3>';
       h += barra(p.l26 || 0, p.f26 || 0);
-      h += '<dl class="numeros"><div><dt>Lula</dt><dd>' + fmt(p.l26) + '%</dd></div><div><dt>Flávio</dt><dd>' + fmt(p.f26) + '%</dd></div><div><dt>Outros</dt><dd>' + fmt(Math.max(0, 100 - p.l26 - p.f26)) + "%</dd></div></dl>";
-      h += '<p class="espaco' + (p.esp >= 1 ? " tem" : "") + '">' + esc(resumoEspaco(p.esp)) + ". Abstenção " + fmt(p.ab) + "%, brancos e nulos " + fmt(p.bn) + "%.</p>";
-      if (p.l22 != null) h += '<p class="meta">2º turno de 2022: Lula ' + fmt(p.l22) + "%" + (p.d != null ? " · variação " + (p.d > 0 ? "+" : "") + fmt(p.d) + " p.p." : " · sem comparação confiável") + "</p>";
+      h += '<dl class="numeros"><div><dt>Lula</dt><dd>' + fmt(p.l26) + '%</dd></div><div><dt>Flávio</dt><dd>' + fmt(p.f26) + '%</dd></div><div><dt>Outros</dt><dd>' + fmt(Math.max(0, 100 - p.l26 - p.f26)) + "%</dd></div></dl></section>";
+      h += '<dl class="indicadores-setor"><div><dt>Abstenção</dt><dd>' + fmt(p.ab) + '%</dd></div><div><dt>Brancos e nulos</dt><dd>' + fmt(p.bn) + '%</dd></div></dl>';
+      if (p.l22 != null) h += '<p class="comparacao-setor">Lula em 2022 <strong>' + fmt(p.l22) + '%</strong> <span>2º turno' +
+        (p.d != null ? ' · variação ' + (p.d > 0 ? '+' : '') + fmt(p.d) + ' p.p.' : ' · sem comparação confiável') + '</span></p>';
     } else {
-      h += "<p>Sem estimativa: não há local de votação com coordenada neste município.</p>";
+      h += '<p class="sem-estimativa">Sem estimativa disponível para este setor.</p>';
     }
     h += secaoGrupos(cd, d, m, uf);
-    h += '<div class="acoes"><a class="botao-secundario" target="_blank" rel="noopener" href="https://wa.me/?text=' + encodeURIComponent("Bora se organizar no nosso setor? " + location.origin + C.base + "/#setor=" + cd) + '">Mandar no WhatsApp ↗</a><button class="botao-secundario" type="button" id="copiar">Copiar link</button></div>';
     return h;
   }
 
   function secaoGrupos(cd, d, m, uf) {
     const linha = function (g) { return '<li><a class="botao" target="_blank" rel="noopener noreferrer" href="' + esc(g.link) + '">Entrar em ' + esc(g.nome || "grupo") + " ↗</a></li>"; };
     const proprios = gruposSetor(cd);
-    let h = '<section class="grupos-setor"><h3>Grupos deste setor</h3>' + (proprios.length ? '<ul class="grupos">' + proprios.map(linha).join("") + "</ul>" : "<p>Ainda não tem grupo aqui. Comece o seu e envie o link.</p>");
+    let h = '<section class="grupos-setor"><div class="grupos-proprios"><h3>Grupos deste setor</h3>' + (proprios.length ? '<ul class="grupos">' + proprios.map(linha).join("") + "</ul>" : '<p class="grupo-vazio">Nenhum grupo cadastrado neste setor.</p>');
+    h += '<details class="enviar"><summary><span aria-hidden="true">＋</span> Enviar link do meu grupo</summary><form id="enviar-grupo"><label for="grupo-link">Link do WhatsApp ou Telegram</label><input id="grupo-link" type="url" required placeholder="https://chat.whatsapp.com/…"><p class="meta">Os admins revisam antes de publicar · envio com conta GitHub</p><p id="grupo-erro" role="alert"></p><button class="botao" type="submit">Enviar link ↗</button></form></details></div>';
     const viz = (d.viz || []).flatMap(function (v) { return gruposSetor(v); });
     const ufG = grupos[uf] || {};
     const mun = (m.tse || []).flatMap(function (t) { return listaGrupos(ufG.municipios && ufG.municipios[t.slice(3)]); });
@@ -214,15 +222,15 @@
     [["Nos setores vizinhos", viz], ["Na cidade", mun], ["No estado", est]].forEach(function (par) {
       if (par[1].length) h += "<h4>" + par[0] + '</h4><ul class="grupos">' + par[1].map(linha).join("") + "</ul>";
     });
-    h += '<details class="enviar"><summary>Enviar link do meu grupo</summary><form id="enviar-grupo"><label for="grupo-link">Link do WhatsApp ou Telegram</label><input id="grupo-link" type="url" required placeholder="https://chat.whatsapp.com/…"><p class="meta">Os admins revisam antes de publicar · envio com conta GitHub</p><p id="grupo-erro" role="alert"></p><button class="botao" type="submit">Enviar link ↗</button></form></details></section>';
+    h += "</section>";
     return h;
   }
 
   function ligarPainel(cd) {
     const painel = $("painel");
     painel.querySelector(".fechar").addEventListener("click", fecharPainel);
-    $("copiar").addEventListener("click", function () {
-      navigator.clipboard.writeText(location.origin + C.base + "/#setor=" + cd).then(function () { $("copiar").textContent = "Link copiado"; });
+    $("compartilhar-setor").addEventListener("click", function () {
+      compartilhar($("compartilhar-setor"), $("compartilhar-setor-status"));
     });
     $("enviar-grupo").addEventListener("submit", function (ev) {
       ev.preventDefault();
@@ -288,14 +296,32 @@
     if (/^\d{7}$/.test(q.get("cidade") || "")) focarMunicipio(q.get("cidade"), true).catch(function () {});
   }
 
-  $("compartilhar-mapa").addEventListener("click", async function () {
+  async function compartilhar(botao, status) {
     atualizarEndereco();
+    const url = location.href;
+    status.textContent = "";
+    botao.disabled = true;
     try {
-      await navigator.clipboard.writeText(location.href);
-      $("compartilhar-status").textContent = "Link copiado!";
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: "Colmeia", url: url });
+          return;
+        } catch (e) {
+          if (e.name === "AbortError") return;
+        }
+      }
+      await navigator.clipboard.writeText(url);
+      status.textContent = "Link copiado";
     } catch (_) {
-      $("compartilhar-status").textContent = "Copie o link na barra de endereço.";
+      status.textContent = "Copie o link na barra de endereço.";
+    } finally {
+      botao.disabled = false;
     }
+  }
+
+  $("compartilhar-mapa").innerHTML = iconeCompartilhar;
+  $("compartilhar-mapa").addEventListener("click", function () {
+    compartilhar($("compartilhar-mapa"), $("compartilhar-status"));
   });
 
   // Busca: cidades locais; escolas da cidade em foco; ruas pelo geocodificador.
